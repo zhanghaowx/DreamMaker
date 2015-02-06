@@ -1,6 +1,7 @@
-/bootstrap/compiled.php
+## LARAVEL
 .env.*.php
 .env.php
 
-*.iml
+## IDE
 .idea
+*.iml
