@@ -5,3 +5,9 @@
 ## IDE
 .idea
 *.iml
+
+## COMPOSER
+vendor
+
+## WORDPRESS OCRE
+wordpress
