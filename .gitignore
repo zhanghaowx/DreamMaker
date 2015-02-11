@@ -2,6 +2,9 @@
 .env.*.php
 .env.php
 
+## MAC
+__MACOSX
+
 ## IDE
 .idea
 *.iml
@@ -11,3 +14,6 @@ vendor
 
 ## WORDPRESS OCRE
 wordpress
+
+## INSTALL SCRIPT
+download
