@@ -20,7 +20,8 @@ fi
 ##### install wordpress ######
 if ! type "composer" > /dev/null; then
     echo "Could not find composer, install ... "
-    curl -sS https://getcomposer.org/installer | php 
+    curl -sS https://getcomposer.org/installer | php
+    alias composer='php composer.phar'
 fi
 
 # run install
