@@ -13,21 +13,21 @@ if [ -d "vendor" ]; then
 fi
 
 if [ -d $WP_DIR_NAME ]; then
-    echo "Removing old install of word press ... "
+    echo "Removing old install of WordPress ... "
     rm -r $WP_DIR_NAME
 fi
 
 ##### install wordpress ######
-if ! type "composer" > /dev/null; then
+if ! type "composer" &> /dev/null; then
     echo "Could not find composer, install ... "
-    curl -sS https://getcomposer.org/installer | php >> dev/null
+    curl -sS https://getcomposer.org/installer | php &> /dev/null
     mv composer.phar /usr/local/bin/composer
 fi
 
 # run install
 echo "Update composer dependencies ... "
 composer update
-echo "Install Word Press $WP_VERSION ... "
+echo "Install WordPress $WP_VERSION ... "
 composer install
 
 # check install result
@@ -64,7 +64,7 @@ fi
 
 # main part, here we get the response from the Envato APIs using curl library
 echo "Querying download URL for theme packages ... "
-response=`curl -s "http://marketplace.envato.com/api/edge/$envato_username/$envato_api_key/download-purchase:$envato_purchase_code.json"`
+response=`curl -s "http://marketplace.envato.com/api/edge/$ENVATO_USERNAME/$ENVATO_API_KEY/download-purchase:$ENVATO_PURCHASE_CODE.json"`
 if [ $? != 0 ]; then
     echo "Fail to get download URL from envota marketplace, abort."
     exit 1
