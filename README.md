@@ -8,7 +8,11 @@ Build a website on WordPress for wedding planning.
 [Jupiter] is used as the base theme of the website
 
 ### Install
-Run installation scripts by <pre>chmod +x install.sh && ./install.sh</pre> and follow the instructions
+Run installation scripts and follow on screen instructions
+<pre>chmod +x install.sh && ./install.sh</pre>
+
+### Environment
+Production environment is built upon DigitalOcean Ubuntu 14.04 LAMP Server
 
 [composer]:http://getcomposer.org/
 [Using Composer with WordPress]:http://roots.io/using-composer-with-wordpress/
