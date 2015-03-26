@@ -15,8 +15,8 @@ deploy:
         name: deploy website
         code: |
           export SSH_TO_INSTANCE_AND_RUN="ssh -i $PRIVATEKEY_PATH -l root -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no dream.xiao.today"
-          $SSH_TO_INSTANCE_AND_RUN 'export ENVATO_USERNAME=$ENVATO_USERNAME'
-          $SSH_TO_INSTANCE_AND_RUN 'export ENVATO_API_KEY=$ENVATO_API_KEY'
-          $SSH_TO_INSTANCE_AND_RUN 'export ENVATO_USERNAME=$ENVATO_PURCHASE_CODE'
-          $SSH_TO_INSTANCE_AND_RUN 'cd /var/www/DreamMaker && git pull'
-          $SSH_TO_INSTANCE_AND_RUN 'cd /var/www/DreamMaker && chmod +x install.sh && ./install.sh'
+          $SSH_TO_INSTANCE_AND_RUN "export ENVATO_USERNAME=$ENVATO_USERNAME"
+          $SSH_TO_INSTANCE_AND_RUN "export ENVATO_API_KEY=$ENVATO_API_KEY"
+          $SSH_TO_INSTANCE_AND_RUN "export ENVATO_USERNAME=$ENVATO_PURCHASE_CODE"
+          $SSH_TO_INSTANCE_AND_RUN "cd /var/www/DreamMaker && git pull"
+          $SSH_TO_INSTANCE_AND_RUN "cd /var/www/DreamMaker && chmod +x install.sh && ./install.sh"
