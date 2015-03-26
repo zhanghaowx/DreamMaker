@@ -1,0 +1,16 @@
+box: wercker/default
+deploy:
+  steps:
+    - add-to-known_hosts:
+        hostname: dream.xiao.today
+    - mktemp:
+        envvar: PRIVATEKEY_PATH
+    - create-file:
+        name: write key
+        filename: $PRIVATEKEY_PATH
+        content: $DIGITAL_OCEAN_KEYPAIR_PRIVATE
+        overwrite: true
+        hide-from-log: true
+    - script:
+        name: deploy website
+        code: ssh -i $PRIVATEKEY_PATH -l root -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no dream.xiao.today 'cd /var/www/DreamMaker && git pull'
