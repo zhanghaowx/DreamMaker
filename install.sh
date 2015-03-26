@@ -61,18 +61,18 @@ echo "==============="
 
 ##### install jupiter theme #####
 if [ -z "$ENVATO_USERNAME" ]; then
-    read -p 'Enter Envato Username: ' envato_username
-    export ENVATO_USERNAME=$envato_username
+    echo "Fail to find evnato username in environment variable, abort."
+    exit 1
 fi
 
 if [ -z "$ENVATO_API_KEY" ]; then
-    read -p 'Enter Envato API Key: ' envato_api_key
-    export ENVATO_API_KEY=$envato_api_key
+    echo "Fail to find evnato api key in environment variable, abort."
+    exit 1
 fi
 
 if [ -z "$ENVATO_PURCHASE_CODE" ]; then
-    read -p 'Enter Purchase Code for Jupiter Theme: ' envato_purchase_code
-    export ENVATO_PURCHASE_CODE=$envato_purchase_code
+    echo "Fail to find evnato purchase code for Jupiter Theme in environment variable, abort."
+    exit 1
 fi
 
 # here we get the response from the Envato APIs using curl library
