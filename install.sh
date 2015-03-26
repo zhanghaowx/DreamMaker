@@ -151,7 +151,7 @@ else
     else
         ## Add a New User for WordPress
         adduser $WP_USER
-        chown -R $WP_USER:$WP_USER /var/www/DreamMaker
+        chown -R $WP_USER:$WP_USER $(dirname $0)
         
         # skip if user is not successfully created
         id -u $WP_USER &> /dev/null
