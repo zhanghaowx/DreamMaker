@@ -151,32 +151,31 @@ else
     else
         ## Add a New User for WordPress
         adduser $WP_USER
-        chown -R $WP_USER:$WP_USER /var/www/    
+        chown -R $WP_USER:$WP_USER /var/www/DreamMaker
+        
+        # skip if user is not successfully created
+        id -u $WP_USER &> /dev/null
+        if [ $? == 0 ]; then
+            ## Create SSH Keys for WordPress
+            echo "Creating SSH key for user $WP_USER"
+            su -c "ssh-keygen -t rsa -b 4096 -f /home/$WP_USER/wp_rsa" $WP_USER
+
+            chown $WP_USER:www-data /home/$WP_USER/wp_rsa*
+            chmod 0640 /home/$WP_USER/wp_rsa*
+
+            mkdir /home/$WP_USER/.ssh
+            chown $WP_USER:$WP_USER /home/$WP_USER/.ssh/
+            chmod 0700 /home/$WP_USER/.ssh/
+
+            cp /home/$WP_USER/wp_rsa.pub /home/$WP_USER/.ssh/authorized_keys
+            chown $WP_USER:$WP_USER /home/$WP_USER/.ssh/authorized_keys
+            chmod 0644 /home/$WP_USER/.ssh/authorized_keys
+
+            ## Restrict Key Usage to Local Machine
+            echo -n 'from="127.0.0.1" ' | cat - /home/$WP_USER/.ssh/authorized_keys > temp && mv temp /home/$WP_USER/.ssh/authorized_keys
+        fi
     fi
 fi
-
-# skip if user is not successfully created
-id -u $WP_USER &> /dev/null
-if [ $? == 0 ]; then
-    ## Create SSH Keys for WordPress
-    echo "Creating SSH key for user $WP_USER"
-    su -c "ssh-keygen -t rsa -b 4096 -f /home/$WP_USER/wp_rsa" $WP_USER
-
-    chown $WP_USER:www-data /home/$WP_USER/wp_rsa*
-    chmod 0640 /home/$WP_USER/wp_rsa*
-
-    mkdir /home/$WP_USER/.ssh
-    chown $WP_USER:$WP_USER /home/$WP_USER/.ssh/
-    chmod 0700 /home/$WP_USER/.ssh/
-
-    cp /home/$WP_USER/wp_rsa.pub /home/$WP_USER/.ssh/authorized_keys
-    chown $WP_USER:$WP_USER /home/$WP_USER/.ssh/authorized_keys
-    chmod 0644 /home/$WP_USER/.ssh/authorized_keys
-    
-    ## Restrict Key Usage to Local Machine
-    echo -n 'from="127.0.0.1" ' | cat - /home/$WP_USER/.ssh/authorized_keys > temp && mv temp /home/$WP_USER/.ssh/authorized_keys
-fi
-
 
 ##### add lines to wp-config-sample.php #####
 echo "==================="
