@@ -28,14 +28,13 @@ export ENVATO_PURCHASE_CODE=<Your Purchase Code for Jupiter Theme>
 chmod +x install.sh && ./install.sh
  ```
 4. Increate max upload filesize for WordPress
-```
+ ```
 sudo vim /etc/php5/apache2/php.ini
-```
-and find the following line
-```
-~~upload_max_filesize = 2M~~
-upload_max_filesize = 96M
-```
+ ```
+ find line ~~upload_max_filesize = 2M~~ and replace it with
+ ```
+ upload_max_filesize = 96M
+ ```
 
 5. Follow [How To Set Up Apache Virtual Hosts on Ubuntu 14.04 LTS ](https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-14-04-lts) to finish websiate setup.
 
