@@ -203,7 +203,7 @@ do
         echo "/***** The followings are automatically generated content *****/" >> $wp_config_sample_new
         echo "/* Required by Jupiter Theme: Maximum Execution Time */" >> $wp_config_sample_new
         echo "set_time_limit(60);" >> $wp_config_sample_new
-        echo "define('WP_MEMORY_LIMIT', '96M');" >> $wp_config_sample_new
+        echo "define('WP_MEMORY_LIMIT', '1024M');" >> $wp_config_sample_new
         
         # only add when $WP_USER exists
         id -u $WP_USER &> /dev/null
