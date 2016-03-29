@@ -1,5 +1,5 @@
-# WordPress-Bootstrap
-Build a website on WordPress.
+# WordPress-DigitalOcean
+Build a website on WordPress using **DigitalOcean**'s cloud servers.
 
 ### Version Control
 [Composer] is used to manage WordPress core. Here is an instruction on [Using Composer with WordPress].
