@@ -121,20 +121,22 @@ if [ "$INSTALL_THEME" = true ]; then
     echo "======================================"
 
     echo "Extract downloaded archive ... "
-    unzip $DOWNLOAD_DIR/$THEME_FILENAME -d $DOWNLOAD_DIR
+    unzip -qq $DOWNLOAD_DIR/$THEME_FILENAME -d $DOWNLOAD_DIR
     if [ $? != 0 ]; then
         echo "Fail to unzip theme package file $DOWNLOAD_DIR/$THEME_FILENAME, abort."
         exit 1
     fi
+    rm -rf $DOWNLOAD_DIR/$THEME_FILENAME
 
     echo "Extract theme content from package file ... "
-    unzip $DOWNLOAD_DIR/$THEME_FILENAME -d $DOWNLOAD_DIR
+    theme_package=`find . -name $THEME_FILENAME`
+    unzip -qq $theme_package -d $DOWNLOAD_DIR
     if [ $? != 0 ]; then
-        echo "Fail to unzip theme package file $DOWNLOAD_DIR/$THEME_FILENAME, abort."
+        echo "Fail to unzip theme package file $theme_package, abort."
         exit 1
     fi
 
-    ##### install jupiter theme #####
+    ##### install parent theme #####
     cp -r $DOWNLOAD_DIR/$THEME_NAME $WP_DIR_NAME/wp-content/themes/$THEME_NAME
     chmod -R 755 $WP_DIR_NAME/wp-content/themes/$THEME_NAME
 
