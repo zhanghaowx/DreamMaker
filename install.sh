@@ -1,6 +1,10 @@
 #!/bin/bash
 
 export COMPOSER_JSON="composer.json"
+export DOWNLOAD_DIR="download"
+export THEME_NAME="jupiter"
+export THEME_FILENAME="jupiter.zip"
+export USER_THEME_NAME="$THEME_NAME-child"
 
 echo "================="
 echo "Check Environment"
@@ -55,83 +59,84 @@ fi
 id -u "www-data" &> /dev/null && chown -R www-data:www-data $WP_DIR_NAME
 # add support for other OS if needed
 
-echo "==============="
-echo "Download Themes"
-echo "==============="
+# should we install optional theme?
+INSTALL_THEME=true
 
 ##### install jupiter theme #####
 if [ -z "$ENVATO_USERNAME" ]; then
-    echo "Fail to find evnato username in environment variable, abort."
-    exit 1
+    echo "Fail to find evnato username in environment variable, skip."
+    INSTALL_THEME=false
 fi
 
 if [ -z "$ENVATO_API_KEY" ]; then
-    echo "Fail to find evnato api key in environment variable, abort."
-    exit 1
+    echo "Fail to find evnato api key in environment variable, skip."
+    INSTALL_THEME=false
 fi
 
 if [ -z "$ENVATO_PURCHASE_CODE" ]; then
     echo "Fail to find evnato purchase code for Jupiter Theme in environment variable, abort."
-    exit 1
+    INSTALL_THEME=false
 fi
+if [ "$INSTALL_THEME" = true ]; then
+    echo "==============="
+    echo "Download Themes"
+    echo "==============="
 
-# here we get the response from the Envato APIs using curl library
-echo "Querying download URL for theme packages ... "
-response=`curl -s "http://marketplace.envato.com/api/edge/$ENVATO_USERNAME/$ENVATO_API_KEY/download-purchase:$ENVATO_PURCHASE_CODE.json"`
-if [ $? != 0 ]; then
-    echo "Fail to get download URL from envota marketplace, abort."
-    exit 1
+    # here we get the response from the Envato APIs using curl library
+    echo "Querying download URL for theme packages ... "
+    response=`curl -s "http://marketplace.envato.com/api/edge/$ENVATO_USERNAME/$ENVATO_API_KEY/download-purchase:$ENVATO_PURCHASE_CODE.json"`
+    if [ $? != 0 ]; then
+        echo "Fail to get download URL from envota marketplace, abort."
+        exit 1
+    fi
+
+    response_error=`echo $response | python -mjson.tool | grep -Po '(?<="error": ")[^"]*'`
+    if [ "$response_error" != "" ]; then
+        echo "Fail to get download URL from envota marketplace, reason: $response_error"
+        exit 1
+    fi
+
+    response_url=`echo $response | python -mjson.tool | grep -Po '(?<="download_url": ")[^"]*'`
+
+    if [ ! -d "$DOWNLOAD_DIR" ]; then
+        mkdir $DOWNLOAD_DIR
+    else
+        rm -r $DOWNLOAD_DIR/*
+    fi
+
+    echo "Downloading theme package from $response_url ... into direcotry $DOWNLOAD_DIR"
+    wget $response_url -O $DOWNLOAD_DIR/$THEME_FILENAME
+    if [ $? != 0 ]; then
+        echo "Fail to download theme package from envota marketplace, abort."
+        exit 1
+    fi
+
+    echo "======================================"
+    echo "Install Themes (Tweak Based on Themes)"
+    echo "======================================"
+
+    echo "Extract downloaded archive ... "
+    unzip $DOWNLOAD_DIR/$THEME_FILENAME -d $DOWNLOAD_DIR
+    if [ $? != 0 ]; then
+        echo "Fail to unzip theme package file $DOWNLOAD_DIR/$THEME_FILENAME, abort."
+        exit 1
+    fi
+
+    echo "Extract theme content from package file ... "
+    unzip $DOWNLOAD_DIR/$THEME_FILENAME -d $DOWNLOAD_DIR
+    if [ $? != 0 ]; then
+        echo "Fail to unzip theme package file $DOWNLOAD_DIR/$THEME_FILENAME, abort."
+        exit 1
+    fi
+
+    ##### install jupiter theme #####
+    cp -r $DOWNLOAD_DIR/$THEME_NAME $WP_DIR_NAME/wp-content/themes/$THEME_NAME
+    chmod -R 755 $WP_DIR_NAME/wp-content/themes/$THEME_NAME
+
+    ##### install child theme #####
+    cp -r theme $WP_DIR_NAME/wp-content/themes/$USER_THEME_NAME
+    chmod -R 755 $WP_DIR_NAME/wp-content/themes/$USER_THEME_NAME
 fi
-
-response_error=`echo $response | python -mjson.tool | grep -Po '(?<="error": ")[^"]*'`
-if [ "$response_error" != "" ]; then
-    echo "Fail to get download URL from envota marketplace, reason: $response_error"
-    exit 1
-fi
-
-response_url=`echo $response | python -mjson.tool | grep -Po '(?<="download_url": ")[^"]*'`
-
-download_file_dir="download"
-
-if [ ! -d "$download_file_dir" ]; then
-    mkdir $download_file_dir
-else
-    rm -r $download_file_dir/*
-fi
-
-download_file_name="jupiter.zip"
-
-echo "Downloading theme package from $response_url ... into direcotry $download_file_dir"
-wget $response_url -O $download_file_dir/$download_file_name
-if [ $? != 0 ]; then
-    echo "Fail to download theme package from envota marketplace, abort."
-    exit 1
-fi
-
-echo "=============="
-echo "Install Themes"
-echo "=============="
-
-echo "Extract theme content from package file ... "
-unzip $download_file_dir/$download_file_name -d $download_file_dir
-if [ $? != 0 ]; then
-    echo "Fail to unzip theme package file $download_file_dir/$download_file_name, abort."
-    exit 1
-fi
-
-unzip $download_file_dir/main/jupiter.zip -d $download_file_dir
-if [ $? != 0 ]; then
-    echo "Fail to unzip theme package file $download_file_dir/main/jupiter.zip, abort."
-    exit 1
-fi
-
-##### install jupiter theme #####
-cp -r $download_file_dir/jupiter $WP_DIR_NAME/wp-content/themes/jupiter
-chmod -R 755 $WP_DIR_NAME/wp-content/themes/jupiter
-
-##### install child theme #####
-cp -r theme $WP_DIR_NAME/wp-content/themes/dreammaker
-chmod -R 755 $WP_DIR_NAME/wp-content/themes/dreammaker
 
 ##### config WordPress ftp user account #####
 echo "========================================================================================================================="
@@ -152,7 +157,7 @@ else
         ## Add a New User for WordPress
         adduser $WP_USER
         chown -R $WP_USER:$WP_USER $(dirname $0)
-        
+
         # skip if user is not successfully created
         id -u $WP_USER &> /dev/null
         if [ $? == 0 ]; then
@@ -204,7 +209,7 @@ do
         echo "/* Required by Jupiter Theme: Maximum Execution Time */" >> $wp_config_sample_new
         echo "set_time_limit(60);" >> $wp_config_sample_new
         echo "define('WP_MEMORY_LIMIT', '1024M');" >> $wp_config_sample_new
-        
+
         # only add when $WP_USER exists
         id -u $WP_USER &> /dev/null
         if [ $? == 0 ]; then
