@@ -11,9 +11,14 @@ echo "Check Environment"
 echo "================="
 
 ##### check required packages #####
+if ! type "php" &> /dev/null; then
+    echo "Could not find command php, install ..."
+    sudo apt-get -y install php
+fi
+
 if ! type "unzip" &> /dev/null; then
-    echo "Could not find command unzip, please install it first, abort."
-    exit 1
+    echo "Could not find command unzip, please install it first, install ..."
+    sudo apt-get -y install unzip
 fi
 
 if ! type "composer" &> /dev/null; then
