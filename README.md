@@ -13,7 +13,7 @@ The script supports downloading and install theme from [Envato Market](http://th
  * Under "Select Image", choose "Applications -> LAMP on 14.04", or similar options if not available.
 
 2. Install git and clone the repository into /var/www
- 
+
  ```bash
 cd /var/www
 sudo apt-get install git
@@ -21,7 +21,7 @@ git clone https://github.com/zhanghaowx/DreamMaker.git
  ```
 
 3. Run installation scripts and follow on screen instructions
- 
+
  ```bash
 # Optional
 export ENVATO_USERNAME=<Your Envato Username>
